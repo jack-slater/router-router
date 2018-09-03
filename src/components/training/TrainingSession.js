@@ -12,16 +12,33 @@ class _TrainingSession extends React.Component {
         this.props.history.push(`/training/${number + 1}`);
     };
 
+    renderContent(number) {
+        const sessionComplete = this.props.trainingComplete.includes(number);
+        const prevSessionComplete = this.props.trainingComplete.includes(number - 1);
+
+        if (!prevSessionComplete && number !== 1) {
+            return (<div>
+                <h3>Please complete the previous session first</h3>
+            </div>)
+        } else {
+            return (
+                <div>
+                    <p>Training content, lots of training content which changes for training things</p>
+                    {number % 4 === 0 && <YouTube videoId={"hY7m5jjJ9mM"}/>}
+                    {!sessionComplete && <button onClick={this.completeSessionAndReturn}>Mark Complete</button>}
+                    {sessionComplete && <Link to={`/training/${number + 1}`}>Next Session</Link>}
+                </div>
+            )
+        }
+
+    }
+
     render() {
         const number = +this.props.match.params.number;
-        const sessionComplete = this.props.trainingComplete.includes(number);
         return (
             <div>
                 <h1>This is Training Session {number}</h1>
-                <p>Training content, lots of training content which changes for training things</p>
-                {number % 4 === 0 && <YouTube videoId={"hY7m5jjJ9mM"}/>}
-                {!sessionComplete && <button onClick={this.completeSessionAndReturn}>Mark Complete</button>}
-                {sessionComplete && <Link to={`/training/${number + 1}`}>Next Session</Link>}
+                {this.renderContent(number)}
                 {number > 1 && <Link to={`/training/${number - 1}`}>Previous Session</Link>}
             </div>
         )
